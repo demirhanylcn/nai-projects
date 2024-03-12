@@ -46,112 +46,117 @@ Depending on the given value of K we will check the main class is matching with 
 If so we will determine if it is true or not then return it.
 """
 
-def find_majority_class(distance_list,given_k):
+
+def main_file(train_file_path, test_file_path, given_k):
+    with open(test_file_path, 'r') as file_test:
+        test_file_content = file_test.readlines()
+    with open(train_file_path, 'r') as file_train:
+        train_file_content = file_train.readlines()
+
+    final_answers = []
+
+    for test_file_count in range(len(test_file_content)):
+        distances_names = find_distances_classes(test_file_content, train_file_content,test_file_count)
+        final_class = find_final_class(distances_names, given_k)
+        answer = check_correctness_of_classes(final_class, test_file_count,test_file_content)
+        final_answers.append(answer)
+
+    return final_answers
+
+
+def find_distances_classes(test_file_content, train_file_content, test_file_count):
+    distances_classes = []
+
+    test_file_raw_content = test_file_content[test_file_count].strip().split(",")
+    test_file_content_calculated = []
+
+    for i in range(len(test_file_raw_content)):
+        if i == len(test_file_raw_content) - 1:
+            test_file_content_calculated.append(str(test_file_raw_content[i]))
+        else:
+            test_file_content_calculated.append(float(test_file_raw_content[i]))
+
+    for i in range(len(train_file_content)):
+        train_file_line_raw_content = train_file_content[i].strip().split(",")
+        train_file_content_calculated = []
+        for j in range(len(train_file_line_raw_content)):
+            if j == len(train_file_line_raw_content) - 1:
+                train_file_content_calculated.append(str(train_file_line_raw_content[j]))
+            else:
+                train_file_content_calculated.append(float(train_file_line_raw_content[j]))
+
+        first_value = (train_file_content_calculated[0] - test_file_content_calculated[0]) ** 2
+        second_value = (train_file_content_calculated[1] - test_file_content_calculated[1]) ** 2
+        third_value = (train_file_content_calculated[2] - test_file_content_calculated[2]) ** 2
+        forth_value = (train_file_content_calculated[3] - test_file_content_calculated[3]) ** 2
+        distance = math.sqrt(first_value + second_value + third_value + forth_value)
+        distances_classes.append(str(distance) + ":" + str(train_file_content_calculated[4]))
+
+    return distances_classes
+
+def find_minimum_index(distance_list, given_k):
+    min_index_list = []
+
+    for k in range(given_k):
+        min_number = distance_list[0]
+        min_index = 0
+
+        for i in range(1, len(distance_list)):
+            if distance_list[i] < min_number:
+                min_number = distance_list[i]
+                min_index = i
+
+        min_index_list.append(min_index)
+
+    return min_index_list
+def find_final_class(distances_classes,given_k):
     distances = []
     class_names = []
-    for i in range(len(distance_list)):
-        distance_class = distance_list[i].split(":")
+    for i in range(len(distances_classes)):
+        distance_class = distances_classes[i].split(":")
         distance = float(distance_class[0])
-        class_name = distance_class[1]
+        class_name = str(distance_class[1])
         distances.append(distance)
         class_names.append(class_name)
 
-    smallest_k_class_names = []
-    for i in range(0,given_k):
-        smallest_distance_index = find_minimum_index(distances)
-        smallest_class_name = class_names[smallest_distance_index]
-        smallest_k_class_names.append(smallest_class_name)
-        del distances[smallest_distance_index]
-        del class_names[smallest_distance_index]
+    minimum_indexes = find_minimum_index(distances,given_k)
+    final_class_names = []
+    for i in range(len(class_names)):
+        if i in minimum_indexes:
+            final_class_names.append(class_names[i])
 
-    name_dictionary = {}
-    for name in smallest_k_class_names:
-        if name in name_dictionary:
-            name_dictionary[name] += 1
+    final_class_dictionary = {}
+    for name in final_class_names:
+        if name in final_class_dictionary:
+            final_class_dictionary[name] += 1
         else:
-            name_dictionary[name] = 1
-    most_repeated_name = max(name_dictionary, key=name_dictionary.get)
+            final_class_dictionary[name] = 1
+    most_repeated_name = max(final_class_dictionary, key=final_class_dictionary.get)
     return most_repeated_name
 
+def check_correctness_of_classes(final_class,test_file_count,test_file_content):
+    test_file_line_list = test_file_content[test_file_count].strip().split(",")
+    test_file_class_name = test_file_line_list[len(test_file_line_list)-1]
+    print(test_file_class_name,final_class)
+    if test_file_class_name == final_class:
+        return True
+    else:
+        return False
 
+training_file = "C:\\Users\\demir\\Documents\\git\\nai-projects\\project1\\train.txt"
+test_file = "C:\\Users\\demir\\Documents\\git\\nai-projects\\project1\\test.txt"
 
-def find_minimum_index(distance_list):
-    min_number = distance_list[0]
-    min_index = 0
-    for i in range(1,len(distance_list)):
-        if distance_list[i] < min_number:
-            min_number = distance_list[i]
-            min_index = i
-
-    return min_index
-def find_distances(train_file_path, test_file_path, given_k):
-    final_name_of_classes = []
-
-    try:
-        with open(test_file_path, 'r') as file_test:
-            test_file_content = file_test.readlines()
-        with open(train_file_path, 'r') as file_train:
-            for i in range(0, len(test_file_content)):
-                
-                distances_classes = []
-                test_content = []
-                test_raw = test_file_content[i].strip().split(",")
-                for k in range(0, len(test_raw)):
-
-                    if k == len(test_raw) - 1:
-                        test_content.append(str(test_raw[k]))
-                    else:
-                        test_content.append(float(test_raw[k]))
-                for line in file_train:
-                    train_content = []
-                    train_raw = line.split(",")
-                    for j in range(0, len(train_raw)):
-                        if j == len(train_raw) - 1:
-                            train_content.append(str(train_raw[j]))
-                        else:
-                            train_content.append(float(train_raw[j]))
-                    first_value = (train_content[0] - test_content[0]) ** 2
-                    second_value = (train_content[1] - test_content[1]) ** 2
-                    third_value = (train_content[2] - test_content[2]) ** 2
-                    forth_value = (train_content[3] - test_content[3]) ** 2
-                    distance = math.sqrt(first_value + second_value + third_value + forth_value)
-                    distances_classes.append(str(distance) + ":" + str(train_content[4]))
-                majority_class = find_majority_class(distances_classes,given_k)
-                final_name_of_classes.append(majority_class)
-
-
-        answers = check_correctness_of_classes(final_name_of_classes)
-        return answers
-
-    except Exception as e:
-        print(e)
-
-def check_correctness_of_classes(final_name_of_classes,test_file_path):
-    class_names_test = []
-    with open(test_file_path, "r") as file:
-        for line in file:
-            line_list = line.split(",")
-            class_names_test.append(line_list[len(class_names_test) - 1])
-
-    answers = []
-    for i in range(0,len(final_name_of_classes)):
-        if final_name_of_classes[i] == class_names_test[i]:
-            answers.append(True)
-
-    return answers
-
-
-training_file = "/Users/demjrhan/Documents/nai-projects/project1/train.txt"
 while True:
     print("A) use the test file \n"
           "B) provide your own test file \n"
           "C) exit the program. \n")
     user_input = str(input("enter a,b or c."))
-    match user_input:
+    match user_input.lower().strip()[0]:
         case "a":
-            test_file = str(input("enter test file path"))
+            test_file = test_file
             k_number = int(input("enter k"))
-            answers = find_distances(training_file, test_file, k_number)
+            answers = main_file(training_file, test_file, k_number)
+            print(answers)
 
             break
         case "b":
