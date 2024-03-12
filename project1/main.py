@@ -51,15 +51,14 @@ def find_majority_class(distance_list,given_k):
     class_names = []
     for i in range(len(distance_list)):
         distance_class = distance_list[i].split(":")
-        distance = distance_class[0]
+        distance = float(distance_class[0])
         class_name = distance_class[1]
         distances.append(distance)
         class_names.append(class_name)
 
     smallest_k_class_names = []
     for i in range(0,given_k):
-        smallest_distance_index = distances.index(min(distances))
-        """find in different way"""
+        smallest_distance_index = find_minimum_index(distances)
         smallest_class_name = class_names[smallest_distance_index]
         smallest_k_class_names.append(smallest_class_name)
         del distances[smallest_distance_index]
@@ -76,6 +75,15 @@ def find_majority_class(distance_list,given_k):
 
 
 
+def find_minimum_index(distance_list):
+    min_number = distance_list[0]
+    min_index = 0
+    for i in range(1,len(distance_list)):
+        if distance_list[i] < min_number:
+            min_number = distance_list[i]
+            min_index = i
+
+    return min_index
 def find_distances(train_file_path, test_file_path, given_k):
     final_name_of_classes = []
 
@@ -84,10 +92,12 @@ def find_distances(train_file_path, test_file_path, given_k):
             test_file_content = file_test.readlines()
         with open(train_file_path, 'r') as file_train:
             for i in range(0, len(test_file_content)):
+                
                 distances_classes = []
                 test_content = []
                 test_raw = test_file_content[i].strip().split(",")
                 for k in range(0, len(test_raw)):
+
                     if k == len(test_raw) - 1:
                         test_content.append(str(test_raw[k]))
                     else:
@@ -109,6 +119,7 @@ def find_distances(train_file_path, test_file_path, given_k):
                 majority_class = find_majority_class(distances_classes,given_k)
                 final_name_of_classes.append(majority_class)
 
+
         answers = check_correctness_of_classes(final_name_of_classes)
         return answers
 
@@ -117,7 +128,7 @@ def find_distances(train_file_path, test_file_path, given_k):
 
 def check_correctness_of_classes(final_name_of_classes,test_file_path):
     class_names_test = []
-    with open(test_file_path) as file:
+    with open(test_file_path, "r") as file:
         for line in file:
             line_list = line.split(",")
             class_names_test.append(line_list[len(class_names_test) - 1])
@@ -141,7 +152,6 @@ while True:
             test_file = str(input("enter test file path"))
             k_number = int(input("enter k"))
             answers = find_distances(training_file, test_file, k_number)
-            print(answers)
 
             break
         case "b":
