@@ -49,7 +49,7 @@ If so we will determine if it is true or not then return it.
 def find_majority_class(distance_list,given_k):
     distances = []
     class_names = []
-    for i in range(0,len(distance_list)):
+    for i in range(len(distance_list)):
         distance_class = distance_list[i].split(":")
         distance = distance_class[0]
         class_name = distance_class[1]
@@ -59,6 +59,7 @@ def find_majority_class(distance_list,given_k):
     smallest_k_class_names = []
     for i in range(0,given_k):
         smallest_distance_index = distances.index(min(distances))
+        """find in different way"""
         smallest_class_name = class_names[smallest_distance_index]
         smallest_k_class_names.append(smallest_class_name)
         del distances[smallest_distance_index]
