@@ -188,20 +188,20 @@ training_file = "C:\\Users\\demir\\Documents\\git\\nai-projects\\project1\\train
 test_file = "C:\\Users\\demir\\Documents\\git\\nai-projects\\project1\\test.txt"
 
 while True:
-    print("A) use the test file \n"
+    print("\nA) use the test file \n"
           "B) provide your own test file \n"
           "C) exit the program. \n")
-    user_input = str(input("enter a,b or c."))
+    user_input = str(input("enter a,b or c. \nyour input = "))
     match user_input.lower().strip()[0]:
         case "a":
             test_file_path = test_file
-            k_number = int(input("enter k"))
+            k_number = int(input("enter the K number = "))
             answers = main_file(training_file, test_file, k_number)
             print(answers)
 
         case "b":
-            test_file_path = str(input("enter test file path"))
-            k_number = int(input("enter the K number"))
+            test_file_path = str(input("enter test file path = "))
+            k_number = int(input("enter the K number = "))
             answers = main_file(training_file, test_file_path, k_number)
             print(answers)
 
