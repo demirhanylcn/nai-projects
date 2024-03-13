@@ -29,6 +29,8 @@ def is_file_ok(test_file_path, train_file_path):
             content_test_raw = line_test.strip().split(",")
             content_train_raw = line_train.strip().split(",")
 
+
+
             content_test_calculated = []
             for i in range(len(content_test_raw)):
                 if i == len(content_test_raw) - 1:
@@ -209,7 +211,7 @@ while True:
         case "a":
             test_file_path = str(input("enter test file path = "))
             k_number = int(input("enter the K number = "))
-            answers = main_file(training_file, test_file, k_number)
+            answers = main_file(training_file, test_file_path, k_number)
             print(answers)
 
         case "b":
@@ -217,7 +219,7 @@ while True:
             data = []
             while True:
                 print("to stop write stop.")
-                line = str(input("enter line" + str(count) + " = "))
+                line = str(input("enter line " + str(count) + " = "))
                 if line.lower() == "stop":
                     break
                 else:
