@@ -163,12 +163,19 @@ def find_final_class(distances_classes, given_k):
         else:
             final_class_dictionary[name] = 1
 
-    most_repeated_name = None
+    most_repeated_names = []
     max_count = 0
     for name, count in final_class_dictionary.items():
         if count > max_count:
-            most_repeated_name = name
+            most_repeated_names = [name]
             max_count = count
+        elif count == max_count:
+            most_repeated_names.append(name)
+
+    if len(most_repeated_names) > 1:
+        most_repeated_name = "X"
+    else:
+        most_repeated_name = most_repeated_names[0]
 
     return most_repeated_name
 
@@ -186,7 +193,13 @@ def check_correctness_of_classes(final_class, test_file_count, test_file_content
 
 training_file = "C:\\Users\\demir\\Documents\\git\\nai-projects\\project1\\train.txt"
 test_file = "C:\\Users\\demir\\Documents\\git\\nai-projects\\project1\\test.txt"
+given_test_file = "C:\\Users\\demir\\Documents\\git\\nai-projects\\project1\\givenTest.txt"
 
+def write_into_file(file_content):
+
+    with open("givenTest.txt", "w") as file:
+        for line in file_content:
+            file.write(line + "\n")
 while True:
     print("\nA) use the test file \n"
           "B) provide your own test file \n"
@@ -194,15 +207,25 @@ while True:
     user_input = str(input("enter a,b or c. \nyour input = "))
     match user_input.lower().strip()[0]:
         case "a":
-            test_file_path = test_file
+            test_file_path = str(input("enter test file path = "))
             k_number = int(input("enter the K number = "))
             answers = main_file(training_file, test_file, k_number)
             print(answers)
 
         case "b":
-            test_file_path = str(input("enter test file path = "))
+            count = 0
+            data = []
+            while True:
+                print("to stop write stop.")
+                line = str(input("enter line" + str(count) + " = "))
+                if line.lower() == "stop":
+                    break
+                else:
+                    data.append(line)
+                    count+=1
             k_number = int(input("enter the K number = "))
-            answers = main_file(training_file, test_file_path, k_number)
+            write_into_file(data)
+            answers = main_file(training_file, given_test_file, k_number)
             print(answers)
 
         case "c":
