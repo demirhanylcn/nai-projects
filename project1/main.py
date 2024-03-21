@@ -86,7 +86,13 @@ def main_file(train_file_path, test_file_path, given_k):
             answer = check_correctness_of_classes(final_class, test_file_count, test_file_content)
             final_answers.append(answer)
 
-        return final_answers
+        trueCount = 0
+        for each in final_answers:
+            if (each):
+                trueCount+=1
+
+        accuracy = (trueCount/len(final_answers)) * 100
+        return accuracy
     except ValueError as e:
         print(e)
 
@@ -212,7 +218,7 @@ while True:
             test_file_path = str(input("enter test file path = "))
             k_number = int(input("enter the K number = "))
             answers = main_file(training_file, test_file_path, k_number)
-            print(answers)
+            print("ACCURACY = " + str(answers) +"%")
 
         case "b":
             count = 0
@@ -228,7 +234,7 @@ while True:
             k_number = int(input("enter the K number = "))
             write_into_file(data)
             answers = main_file(training_file, given_test_file, k_number)
-            print(answers)
+            print("ACCURACY = " + str(answers) +"%")
 
         case "c":
             sys.exit()
