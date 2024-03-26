@@ -20,9 +20,13 @@ def getContentOfFile(filePath):
     with open(str(filePath), 'r') as file:
         content = file.readlines()
 
-    random.shuffle(content)
-    print(content)
-    return content
+    contentStripped = []
+    for i in range(len(content)):
+        line = content[i].strip('\n')
+        contentStripped.append(line)
+
+    random.shuffle(contentStripped)
+    return contentStripped
 
 
 """dot product : testfile each * weights each,
@@ -34,39 +38,45 @@ def getContentOfFile(filePath):
 def calculations(testFilePath, weightList, threshold, learningRate, epoch):
     newWeights = weightList
     accuracies = []
-    for eachEpoch in range(0, epoch):
+    for eachEpoch in range(epoch):
         testFile = getContentOfFile(testFilePath)
         trueCount = 0
         for i in range(len(testFile)):
             line = testFile[i]
+            trueCount = 0
             for t in range(len(line) - 1):
-                if dotProduct(line, weightList) > threshold:
+                print(newWeights)
+                if dotProduct(line, newWeights) > threshold:
                     y = 1
                     trueCount += 1
                 else:
                     y = 0
+
                 if y == 0:
+
                     newWeights = deltaRule(newWeights, y, learningRate, line)
-                    print(newWeights)
-        accuracies.append(trueCount / len(testFile))
+        accuracies.append((trueCount / len(testFile))*100)
 
     return accuracies
 
 
 def dotProduct(line, weightList):
     sum = 0
-    for i in range(len(line) - 1):
+    line = line.split(",")
+    for i in range(0,len(weightList)):
         sum += float(line[i]) * weightList[i]
-        return sum
+    return sum
 
 
 def deltaRule(weightList, y, learningRate, line):
     newWeights = []
     rightCalculation = []
-    dMinusY = float(line.strip().split(",")[len(line) - 1]) - float(y)
+    numbersInLine = line.strip().split(",")
+    d = float(numbersInLine[len(numbersInLine) - 1])
+    dMinusY = d - float(y)
     dMinusYTimesLearningRate = float(dMinusY) * float(learningRate)
-    for i in range(len(line) - 1):
-        rightCalculation.append(line[i] * dMinusYTimesLearningRate)
+    for i in range(len(numbersInLine) - 1):
+        rightCalculation.append(float(numbersInLine[i]) * dMinusYTimesLearningRate)
     for y in range(len(weightList)):
         newWeights.append(rightCalculation[y] + weightList[y])
     return newWeights
@@ -76,7 +86,7 @@ def main_method():
     trainingFilePath = input("enter training file path = ")
     learningRate = float(input("enter learning rate = "))
     epochs = int(input("enter number of epochs = "))
-    answer = calculations(trainingFilePath, initializeWeights(2), initializeThreshold(), learningRate, epochs)
+    answer = calculations(trainingFilePath, initializeWeights(3), 0.2, learningRate, epochs)
     print(answer)
 
 
