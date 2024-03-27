@@ -22,7 +22,7 @@ def getContentOfFile(filePath):
 
     contentStripped = []
     for i in range(len(content)):
-        line = content[i].strip('\n')
+        line = content[i].strip("\n").split(",")
         contentStripped.append(line)
 
     random.shuffle(contentStripped)
@@ -45,26 +45,24 @@ def calculations(testFilePath, weightList, threshold, learningRate, epoch):
             line = testFile[i]
             trueCount = 0
             for t in range(len(line) - 1):
-                print(newWeights)
-                if dotProduct(line, newWeights) > threshold:
+                if dotProduct(line, newWeights) > float(threshold):
                     y = 1
                     trueCount += 1
                 else:
                     y = 0
 
                 if y == 0:
-
                     newWeights = deltaRule(newWeights, y, learningRate, line)
+
         accuracies.append((trueCount / len(testFile))*100)
 
     return accuracies
 
-
 def dotProduct(line, weightList):
     sum = 0
-    line = line.split(",")
-    for i in range(0,len(weightList)):
+    for i in range(len(weightList)):
         sum += float(line[i]) * weightList[i]
+
     return sum
 
 
@@ -86,7 +84,7 @@ def main_method():
     trainingFilePath = input("enter training file path = ")
     learningRate = float(input("enter learning rate = "))
     epochs = int(input("enter number of epochs = "))
-    answer = calculations(trainingFilePath, initializeWeights(3), 0.2, learningRate, epochs)
+    answer = calculations(trainingFilePath, initializeWeights(3), initializeThreshold(), learningRate, epochs)
     print(answer)
 
 
