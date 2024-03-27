@@ -45,7 +45,7 @@ def calculations(testFilePath, weightList, threshold, learningRate, epoch):
             line = testFile[i]
             trueCount = 0
             for t in range(len(line) - 1):
-                if dotProduct(line, newWeights) > float(threshold):
+                if dotProduct(line, newWeights) > threshold:
                     y = 1
                     trueCount += 1
                 else:
@@ -69,12 +69,11 @@ def dotProduct(line, weightList):
 def deltaRule(weightList, y, learningRate, line):
     newWeights = []
     rightCalculation = []
-    numbersInLine = line.strip().split(",")
-    d = float(numbersInLine[len(numbersInLine) - 1])
+    d = float(line[len(line) - 1])
     dMinusY = d - float(y)
     dMinusYTimesLearningRate = float(dMinusY) * float(learningRate)
-    for i in range(len(numbersInLine) - 1):
-        rightCalculation.append(float(numbersInLine[i]) * dMinusYTimesLearningRate)
+    for i in range(len(line) - 1):
+        rightCalculation.append(float(line[i]) * dMinusYTimesLearningRate)
     for y in range(len(weightList)):
         newWeights.append(rightCalculation[y] + weightList[y])
     return newWeights
