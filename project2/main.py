@@ -195,7 +195,7 @@ def main_method():
     epochs = int(input("Enter the number of epochs: "))
     answer = calculations(training_file_path, test_file_path, learningRate, epochs)
     for i in range(len(answer) - 2):
-        print(f"accuracy[{i}] {answer[i]}")
+        print(f"Test {i} {answer[i]}%")
 
     while (True):
         input_of_user = int(input("[0] Enter new observation.\n"
