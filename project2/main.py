@@ -140,6 +140,12 @@ def deltaRule(weightList, y, learningRate, line):
     return newWeights
 
 
+def get_key_from_value(mapping, target_value):
+    for key, value in mapping.items():
+        if value == target_value:
+            return key
+    return None
+
 def checkNewObservation(observation, last_answer, test_file_path):
     if is_file_containing_integers(test_file_path):
         is_string = False
@@ -149,34 +155,24 @@ def checkNewObservation(observation, last_answer, test_file_path):
     observation = observation.strip("\n").split(",")
     if is_string:
         labels = ValueLabels(test_file_path)
-        if observation[-1] not in labels:
-            print("this label doesnt exists in the file.")
+        float_observation = [float(each) for each in observation]
+        weights = last_answer[-2]
+        threshold = last_answer[-1]
+        if dotProduct(float_observation, weights) > float(threshold):
+            y = 1
         else:
-            float_observation = [float(each) for each in observation[:-1]]
-            weights = last_answer[-2]
-            threshold = last_answer[-1]
-            observation_d = labels[observation[-1]]
-            if dotProduct(float_observation, weights) > float(threshold):
-                y = 1
-            else:
-                y = 0
-            if observation_d == y:
-                return True
-            else:
-                return False
+            y = 0
+        return get_key_from_value(labels, y)
+
     else:
         int_observation = [int(each) for each in observation]
         weights = last_answer[-2]
         threshold = last_answer[-1]
-        observation_d = int_observation[-1]
         if dotProduct(int_observation, weights) > float(threshold):
             y = 1
         else:
             y = 0
-        if observation_d == y:
-            return True
-        else:
-            return False
+        return y
 
 
 def main_method():
@@ -205,7 +201,7 @@ def main_method():
             print("Invalid input. Try again.")
         elif input_of_user == 0:
             new_observation = str(input("Enter the new observation: "))
-            print(checkNewObservation(new_observation, answer, test_file_path))
+            print("predicted class is",checkNewObservation(new_observation, answer, test_file_path))
 
         else:
             sys.exit()
