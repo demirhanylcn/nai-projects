@@ -16,7 +16,7 @@ class Neuron:
             weightList.append(round(weight, 2))
         return weightList
 
-    def train(self, learning_rate=0.1, epochs=100):
+    def train(self, learning_rate=0.1, epochs=1000):
         # Loop through each epoch
         for epoch in range(epochs):
             # Loop through each language vector
@@ -71,9 +71,8 @@ class Neuron:
                     text = file.read()
                     for char in text:
                         if ord(char) < 128:  # considering only ASCII characters
-                            lang_vector[ord(char)] += 1
+                            lang_vector[ord(char)] += 1/9
             self.language_vectors[lang_folder] = [freq / total_files for freq in lang_vector]
-            print([freq / total_files for freq in lang_vector])
 
     def classify(self, text):
         input_vector = [0] * 128  # Initialize input vector for ASCII characters
