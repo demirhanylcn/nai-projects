@@ -1,23 +1,22 @@
 import os
 import random
 
-
 class Neuron:
     def __init__(self):
         self.languages = []
         self.language_vectors = {}
         self.weights = []
 
-    def initalize_weights(self, size):
-        weightList = []
-        for i in range(size):
+    def initialize_weights(self, size):
+        weight_list = []
+        for _ in range(size):
             random_number = random.uniform(0.2, 0.5)
             weight = round(random_number, 1) * 0.7
-            weightList.append(round(weight, 2))
-        return weightList
+            weight_list.append(round(weight, 2))
+        return weight_list
 
     def train(self, learning_rate, epochs):
-        for epoch in range(epochs):
+        for _ in range(epochs):
             for lang_name in self.languages:
                 lang_index = self.get_language_index(lang_name)
                 for i in range(len(self.weights)):
@@ -26,9 +25,8 @@ class Neuron:
                     self.update_weights(i, learning_rate, input_vector, is_correct_language)
 
     def get_language_index(self, lang_name):
-
-        for index in range(len(self.languages)):
-            if self.languages[index] == lang_name:
+        for index, language in enumerate(self.languages):
+            if language == lang_name:
                 return index
 
     def update_weights(self, index, learning_rate, input_vector, is_correct_language):
@@ -65,7 +63,6 @@ class Neuron:
             for i in range(len(input_vector)):
                 net_value += input_vector[i] * weights[i]
             net.append(net_value)
-        print(net)
         max_index = net.index(max(net))
         return self.languages[max_index]
 
@@ -74,7 +71,7 @@ if __name__ == '__main__':
     neuron = Neuron()
     neuron.find_chars("C:\\Users\\demir\\Documents\\git\\nai-projects\\project3\\languages")
     language_count = len(neuron.languages)
-    neuron.weights = [neuron.initalize_weights(128) for _ in range(language_count)]
+    neuron.weights = [neuron.initialize_weights(128) for _ in range(language_count)]
     epoch = int(input("Enter number of epochs: "))
     learning_rate = float(input("Enter learning rate: "))
     neuron.train(learning_rate, epoch)
