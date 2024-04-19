@@ -19,31 +19,50 @@ def find_centroids(labeled_lines,k_number):
     # we are getting rid of last 2 column which represents label and centroid group
     length = len(labeled_lines[0].strip('\n').split(","))-2
     # count variable to make sure we go step by step each label then move on to next.
+    find_label_percentage_in_each_centroid(labeled_lines,k_number)
 
 
-    percentage_of_iris = []
-    each_centroid_iris = {}
     #reason of 1,k_number+1 because we wont have centroid with number 0, it is starting from 1.
     for k_centroid in range(1,k_number+1):
         # sum of values for dividing operation in the future
-        sum = 0
+        centroid_k = []
         for i in range(length):
+            sum = 0
             for j in range(len(labeled_lines)):
                 # we strip and split the line to have data like a,b,c,iris--,label
                 stripped_line = labeled_lines[j].strip('\n').split(",")
                 centroid = int(stripped_line[-1])
                 if centroid == k_centroid:
                     sum += float(stripped_line[i])
-                    group = stripped_line[-2]
-                    if i == length - 1:
-                        if group not in each_centroid_iris:
-                            each_centroid_iris[group] = 0
-                        each_centroid_iris[group] += 1
-        percentage_of_iris.append(each_centroid_iris)
-        each_centroid_iris = {}
-        percentage = (sum / find_how_many_label(labeled_lines,k_centroid)) * 100
-        print(percentage)
-    print(percentage_of_iris)
+            percentage = (sum / find_how_many_label(labeled_lines, k_centroid))
+            centroid_k.append(percentage)
+        centroids.append(centroid_k)
+    print(centroids)
+
+
+def find_label_percentage_in_each_centroid(text, k_number):
+    total_counts = []
+    for k in range(1, k_number+1):
+        label_count = {}
+        count = 0
+        for line in text:
+            stripped_line = line.strip('\n').split(",")
+            if stripped_line[-1] == str(k):
+                label = stripped_line[-2]
+                if label not in label_count:
+                    label_count[label] = 0
+                label_count[label] += 1
+                count += 1
+        total_counts.append(label_count)
+
+    for centroid in total_counts:
+        total_sum = sum(centroid.values())
+        for label in centroid:
+            centroid[label] = (float(centroid[label]) / total_sum) * 100
+
+    print(total_counts)
+
+
 
 
 def find_how_many_label(text,label):
