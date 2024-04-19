@@ -2,77 +2,82 @@ import os
 import random
 
 
-def initialize_weights(size):
-    weight_list = []
-    for _ in range(size):
-        random_number = random.uniform(0.2, 0.5)
-        weight = random_number * 0.7
-        weight_list.append(weight)
-    return weight_list
+class Perceptron:
+    def __init__(self,training_file_path,test_file_path):
+        self.weights = []
+        self.learning_rate = 0
+        self.threshold = 0
+        self.epoch = 0
+        self.accuracy = 0
+        self.training_file_path = training_file_path
+        self.testing_file_path = test_file_path
+
+    def initializeThreshold(self):
+        random_number = random.uniform(0.5, 1)
+        self.threshold = round(random_number, 1) * 0.7
+
+    def deltaRule(self,d, y, line):
+        newWeights = []
+        for i in range(len(self.weights)):
+            newWeights.append(self.weights[i] + (self.learning_rate * (d - y) * float(line[i])))
+        return newWeights
+
+    def initialize_weights(self):
+        for _ in range(len(self.weights)):
+            random_number = random.uniform(0.2, 0.5)
+            weight = random_number * 0.7
+            self.weights.append(weight)
+
+    def dotProduct(self, vector):
+        sum = 0
+        for i in range(len(self.weights)):
+            sum += float(vector[i]) * self.weights[i]
+        return sum
+    def get_inputs(self):
+        self.epoch = int(input("Enter number of epochs: "))
+        self.learning_rate = float(input("Enter learning rate: "))
+        self.initializeThreshold()
+        self.initialize_weights()
+
+    def read_content(self,file_path):
+        """"""
 
 
-def train(weights, languages, language_vectors, learning_rate, epochs):
-    for _ in range(epochs):
-        for lang_name in languages:
-            lang_index = languages.index(lang_name)
-            for i in range(len(weights)):
-                input_vector = language_vectors[lang_name]
-                is_correct_language = (i == lang_index)
-                update_weights(weights, i, learning_rate, input_vector, is_correct_language)
+
+def train_n_test(self):
+
+        training_set = self.read_content('')
 
 
-def update_weights(weights, index, learning_rate, input_vector, is_correct_language):
-    for j in range(len(weights[index])):
-        if is_correct_language:
-            weights[index][j] += learning_rate * input_vector[j]
-        else:
-            weights[index][j] -= learning_rate * input_vector[j]
+
+"""def train():
 
 
-def find_chars(data_dir):
-    languages = []
-    language_vectors = {}
-    for lang_folder in os.listdir(data_dir):
-        languages.append(lang_folder)
-        lang_path = os.path.join(data_dir, lang_folder)
-        lang_vector = [0] * 128
-        total_files = 0
-        for file_name in os.listdir(lang_path):
-            total_files += 1
-            with open(os.path.join(lang_path, file_name), 'r', encoding='utf-8') as file:
-                text = file.read()
-                for char in text:
-                    if ord(char) < 128:
-                        lang_vector[ord(char)] += 1
-        language_vectors[lang_folder] = [freq / 128 for freq in lang_vector]
-    return languages, language_vectors
+def test():
 
 
-def prediction(text, weights, languages):
-    input_vector = [0] * 128
-    for char in text:
-        if ord(char) < 128:
-            input_vector[ord(char)] += 1
+def dot_product():
 
-    net = []
-    for weight in weights:
-        net_value = 0
-        for i in range(len(input_vector)):
-            net_value += input_vector[i] * weight[i]
-        net.append(net_value)
-    max_index = net.index(max(net))
-    return languages[max_index]
+
+def proportions():
+
+
+def predict_language():
+
+
+
 
 
 if __name__ == '__main__':
-    data_dir = "C:\\Users\\demir\\Documents\\git\\nai-projects\\project3\\languages"
-    languages, language_vectors = find_chars(data_dir)
-    language_count = len(languages)
-    weights = [initialize_weights(128) for _ in range(language_count)]
-    epoch = int(input("Enter number of epochs: "))
-    learning_rate = float(input("Enter learning rate: "))
-    train(weights, languages, language_vectors, learning_rate, epoch)
+    test_files = "C:\\Users\\demir\\Documents\\git\\nai-projects\\project3\\test"
+    train_files = "C:\\Users\\demir\\Documents\\git\\nai-projects\\project3\\train"
+    language_count = len(os.listdir(test_files))
+    epochs, learning_rate = get_user_inputs()
     while True:
         text = input("Enter the sentence: ")
-        language = prediction(text, weights, languages)
+        language = predict_language()
         print("Predicted language:", language)
+"""
+
+if __name__ == '__main__':
+    """"""
