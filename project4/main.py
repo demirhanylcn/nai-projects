@@ -4,3 +4,9 @@ if __name__ == "main":
 
 
 def euclidean_distance():
+
+
+
+
+def initalize_labels(text_path):
+    with open
