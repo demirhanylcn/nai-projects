@@ -19,10 +19,11 @@ def find_labels(labeled_lines):
     labels = []
     for line in labeled_lines:
         stripped_line = line.strip('\n').split(",")
-        label = labels.append(stripped_line[-1])
+        label = stripped_line[-1]  # No need to use labels.append() here
         if label not in labels:
             labels.append(label)
-    return labels;
+    return labels
+
 def find_centroids(labeled_lines, k_number):
     centroids = []
     # we are getting rid of last 2 column which represents label and centroid group
@@ -30,7 +31,6 @@ def find_centroids(labeled_lines, k_number):
     # count variable to make sure we go step by step each label then move on to next.
     labels = find_labels(labeled_lines)
     find_label_percentage_in_each_centroid(labeled_lines, labels)
-
     #reason of 1,k_number+1 because we wont have centroid with number 0, it is starting from 1.
     for k_centroid in labels:
         # sum of values for dividing operation in the future
@@ -40,10 +40,10 @@ def find_centroids(labeled_lines, k_number):
             for j in range(len(labeled_lines)):
                 # we strip and split the line to have data like a,b,c,iris--,label
                 stripped_line = labeled_lines[j].strip('\n').split(",")
-                centroid = int(stripped_line[-1])
-                if centroid == k_centroid:
+                centroid = int(stripped_line[-1])  # Convert centroid to integer here
+                if centroid == int(k_centroid):  # Convert k_centroid to integer for comparison
                     sum += float(stripped_line[i])
-            percentage = (sum / find_how_many_label(labeled_lines, k_centroid))
+            percentage = (sum / find_how_many_label(labeled_lines, int(k_centroid)))
             centroid_k.append(percentage)
         centroids.append(centroid_k)
     return centroids, labeled_lines
@@ -109,7 +109,7 @@ def find_label_percentage_in_each_centroid(text, labels):
         for label in centroid:
             centroid[label] = (float(centroid[label]) / total_sum) * 100
 
-    print(total_counts)
+    print("percentages",total_counts)
 
 
 def find_how_many_label(text, label):
@@ -121,10 +121,6 @@ def find_how_many_label(text, label):
             how_many_label[stripped_line[-1]] = 0
         how_many_label[stripped_line[-1]] += 1
 
-    print("Counts for each label:", how_many_label)
-
-    if label not in how_many_label:
-        raise ValueError(f"Label '{label}' not found in the data. Available labels: {list(how_many_label.keys())}")
     return how_many_label[label]
 
 
@@ -136,16 +132,27 @@ def check_label_change(labeled_lines_before, labeled_lines_after):
             return True
     return False
 
-
+def sum_distances(distances):
+    new_distances_visualization = []
+    for i in range(len(distances)):
+        sum_distance = 0
+        for j in range(len(distances[i])):
+            sum_distance += distances[i][j]
+        new_distances_visualization.append("for cluster = " + str(i) +" distance is = "+ str(sum_distance))
+    return new_distances_visualization
 mac = "/Users/demjrhan/Documents/nai-projects/project4/iris_kmeans.txt"
 windows = "C:\\Users\\demir\\Documents\\git\\nai-projects\\project4\\iris_kmeans.txt"
 if __name__ == "__main__":
-    k_number = random.randint(2, 10)
+    k_number = int(input("Enter the k: "))
     labeled_lines = initalize_labels(mac, k_number)
+    iteration = 0
+    print("K IS = ", k_number)
     while True:
+        iteration += 1
+        print(str(iteration) + ". iteration.")
         centroids, labeled_lines = find_centroids(labeled_lines, k_number)
         distances, labeled_lines = find_distances(centroids, labeled_lines)
-        print(distances)
+        print(sum_distances(distances),"\n")
         labeled_lines_after = change_labels(labeled_lines, distances)
         is_Changed = check_label_change(labeled_lines, labeled_lines_after)
         if is_Changed == False:
