@@ -104,9 +104,15 @@ def find_label_percentage_in_each_centroid(text, labels):
         for label in centroid:
             centroid[label] = (float(centroid[label]) / total_sum) * 100
 
-    print("percentages", total_counts)
+    print_purity(total_counts)
 
 
+def print_purity(total_counts):
+    count = 1
+    for label in total_counts:
+        cluster_string = str(count) + ".cluster"
+        print(cluster_string , label)
+        count += 1
 def find_how_many_label(text, label):
     how_many_label = {}
     label = str(label)
@@ -128,30 +134,34 @@ def check_label_change(labeled_lines_before, labeled_lines_after):
     return False
 
 
-def sum_distances(distances):
-    new_distances_visualization = []
-    for i in range(len(distances)):
-        sum_distance = 0
-        for j in range(len(distances[i])):
-            sum_distance += distances[i][j]
-        new_distances_visualization.append("for cluster = " + str(i) + " distance is = " + str(sum_distance))
-    return new_distances_visualization
+def sum_distances(labeled_lines_after, distances):
+    labels = []
+    distance_sum = 0
+    for line in labeled_lines_after:
+        stripped_line = line.strip('\n').split(",")
+        labels.append(int(stripped_line[-1]))
+    for each_distance in range(len(distances[0])):
+        label = labels[each_distance]-1
+        distance = distances[label][each_distance]
+        distance_sum += distance
+    return distance_sum
+
 
 
 mac = "/Users/demjrhan/Documents/nai-projects/project4/iris_kmeans.txt"
 windows = "C:\\Users\\demir\\Documents\\git\\nai-projects\\project4\\iris_kmeans.txt"
 if __name__ == "__main__":
     k_number = int(input("Enter the k: "))
-    labeled_lines = initalize_labels(mac, k_number)
+    labeled_lines = initalize_labels(windows, k_number)
     iteration = 0
-    print("K IS = ", k_number)
     while True:
         iteration += 1
         print(str(iteration) + ". iteration.")
         centroids, labeled_lines = find_centroids(labeled_lines)
         distances, labeled_lines = find_distances(centroids, labeled_lines)
-        print(sum_distances(distances), "\n")
         labeled_lines_after = change_labels(labeled_lines, distances)
+        distances_sum = sum_distances(labeled_lines_after, distances)
+        print("distance = ", distances_sum, "\n")
         is_Changed = check_label_change(labeled_lines, labeled_lines_after)
         if not is_Changed:
             break
