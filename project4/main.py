@@ -110,7 +110,7 @@ def find_label_percentage_in_each_centroid(text, labels):
 def print_purity(total_counts):
     count = 1
     for label in total_counts:
-        cluster_string = str(count) + ".cluster"
+        cluster_string = str(count) + ".cluster percentages "
         print(cluster_string , label)
         count += 1
 def find_how_many_label(text, label):
