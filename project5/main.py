@@ -18,7 +18,7 @@ def get_capacity(path):
 
 def get_characteristic_count(content):
     count = pow(2, len(content))
-    return count
+    return count-1
 
 def get_characteristic_vector(number):
     if number == 0:
@@ -30,8 +30,7 @@ def get_characteristic_vector(number):
         binary_representation.insert(0, remainder)
         number = number // 2
 
-
-    while len(binary_representation) < 31:
+    while len(binary_representation) < 30:
         binary_representation.insert(0, 0)
 
     return binary_representation
@@ -44,6 +43,6 @@ if __name__ == '__main__':
     content = get_content(path)
     capacity = get_capacity(path)
     characteristic_count = get_characteristic_count(content)
-    print(get_characteristic_vector(5))
+    print(get_characteristic_vector(characteristic_count))
 
 
